@@ -4,22 +4,30 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.Instant;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Data
 @AllArgsConstructor
 public class TokenBucket {
+    private final ReentrantLock lock = new ReentrantLock();
     private int capacity;
     private int refillRate;
     private int tokenCount;
     private long lastRefillTime;
 
     public boolean tryConsume() {
-        refill();
-        if(tokenCount > 0) {
-            tokenCount--;
-            return true;
+        lock.lock();
+        try {
+            refill();
+            if(tokenCount > 0) {
+                tokenCount--;
+                return true;
+            }
+            return false;
+        } finally {
+            lock.unlock();
         }
-        return false;
+
     }
 
     private void refill() {

@@ -1,13 +1,12 @@
 package org.example;
 
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TokenBucketRateLimiter implements RateLimiter {
 
-    private final Map<Integer, TokenBucket> tokenMap = new HashMap<>();
-
+    private final Map<Integer, TokenBucket> tokenMap = new ConcurrentHashMap<>();
 
 
     @Override
